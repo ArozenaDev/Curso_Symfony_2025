@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\MicroPost;
+use App\Form\MicroPostTypeForm;
 use App\Repository\MicroPostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,13 +34,7 @@ final class MicroPostController extends AbstractController
     #[Route('/micro-post/add', name: 'app_micro_post_add', priority: 2)]
     public function add(Request $request, EntityManagerInterface $entityManager): Response 
     {
-        $microPost = new MicroPost();
-
-        $form = $this->createFormBuilder($microPost)
-            ->add('title')
-            ->add('text')
-
-            ->getForm();
+        $form = $this->createForm(MicroPostTypeForm::class, new MicroPost());
 
         $form->handleRequest($request);
 
@@ -60,6 +55,36 @@ final class MicroPostController extends AbstractController
 
         return $this->render(
             'micro_post/add.html.twig',
+            [
+                'form' => $form
+            ]
+        );
+
+    }
+
+     #[Route('/micro-post/{post}/edit', name: 'app_micro_post_edit')]
+    public function edit(MicroPost $post, Request $request, EntityManagerInterface $entityManager): Response 
+    {
+
+        $form = $this->createForm(MicroPostTypeForm::class, $post);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $post = $form->getData();
+            $entityManager->persist($post);
+            $entityManager->flush();
+
+            //Add a flash
+            $this->addFlash('success', 'Your micro post has been updated');
+
+            return $this->redirectToRoute('app_micro_post');
+            //Redirect
+
+        }
+
+        return $this->render(
+            'micro_post/edit.html.twig',
             [
                 'form' => $form
             ]
