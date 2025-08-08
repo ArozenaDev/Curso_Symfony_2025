@@ -14,12 +14,7 @@ class CommentTypeForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('text')
-            ->add('post', EntityType::class, [
-                'class' => MicroPost::class,
-                'choice_label' => 'id',
-            ])
-        ;
+            ->add('text');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
