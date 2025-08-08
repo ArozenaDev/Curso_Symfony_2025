@@ -2,9 +2,16 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use DateTime;
+use App\Entity\User;
+use App\Entity\Comment;
+use App\Entity\MicroPost;
+use App\Entity\UserProfile;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\UserProfileRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HelloController extends AbstractController
 {
@@ -14,13 +21,52 @@ class HelloController extends AbstractController
         ['message' => 'Bye!', 'created' => '2024/05/12']
     ];
 
-    #[Route('/{limit<\d+>?3}', name: 'app_index')]
-    public function index(int $limit): Response
+    #[Route('/', name: 'app_index')]
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        // $post = new MicroPost();
+        // $post->setTitle('Hello');
+        // $post->setText('Hello');
+        // $post->setCreated(new DateTime());
+
+        $repository = $entityManager->getRepository(MicroPost::class);
+        $post = $repository->find(10);
+        $comment = $post->getComments()[0];
+
+        $post->removeComment($comment);
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        //dd($post);
+
+        // $comment = new Comment();
+        // $comment->setText('Hello');
+        // $comment->setPost($post);
+        // //$post->addComment($comment);
+        // $entityManager->persist($comment, true);
+        // $entityManager->flush();
+
+
+        // $user = new User();
+        // $user->setEmail('email@email.com');
+        // $user->setPassword('12345678');
+
+
+        // $profile = new UserProfile();
+        // $profile->setUser($user);
+        // $entityManager->persist($profile, true);
+        // $entityManager->flush();
+
+        // $repository = $entityManager->getRepository(UserProfile::class);
+        // $profile = $repository->find(1);
+        // $entityManager->remove($profile, true);
+        // $entityManager->flush();
+
+
         return $this->render('hello/index.html.twig', 
             [
                 'messages' => $this->messages,
-                'limit' => $limit
+                'limit' => 3
             ]
         );
     }
