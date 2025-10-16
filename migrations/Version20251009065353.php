@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250903123953 extends AbstractMigration
+final class Version20251009065353 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20250903123953 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE comment ADD created DATETIME NOT NULL
+            ALTER TABLE user ADD is_verified TINYINT(1) NOT NULL
         SQL);
     }
 
@@ -29,7 +29,7 @@ final class Version20250903123953 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE comment DROP created
+            ALTER TABLE user DROP is_verified
         SQL);
     }
 }
